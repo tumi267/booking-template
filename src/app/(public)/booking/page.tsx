@@ -18,26 +18,31 @@ function page() {
       case 0:
         return <Calender 
         select={setbookingdata}
+        data={bookingdata}
         viewNum={setview}
         viewselected={view}
         />
       case 1:
         return <Time 
         select={setbookingdata}
+        data={bookingdata}
         viewNum={setview}
         viewselected={view}/>
       case 2:
         return <Member 
         select={setbookingdata}
+        data={bookingdata}
         viewNum={setview}
         viewselected={view}/>
       case 3:
         return <Summery 
         viewNum={setview}
+        data={bookingdata}
         viewselected={view}/>
       default:
         return <Calender 
         select={setbookingdata}
+        data={bookingdata}
         viewNum={setview}
         viewselected={view}/> // fallback
     }
