@@ -52,6 +52,9 @@ model Service {
   
 }
 
+model bookings{
+  id String @id @default(uuid())
+}
 
 
 enum UserRole {
