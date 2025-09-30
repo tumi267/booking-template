@@ -3,9 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
 }
+model test {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  }
 
 model User {
   id            String    @id @default(uuid())
@@ -29,7 +34,7 @@ model Provider {
   bio           String?
   user         User      @relation(fields: [userId], references: [id])
   userId        String @unique
-  Service       Service[]
+  // Service       Service[]
   hourlyRate    Float
   rating        Float?    @default(0)
   totalReviews  Int       @default(0)
@@ -45,7 +50,7 @@ model Service {
   description   String?
   duration      Int       // in minutes
   price         Float
-  provider      Provider[]
+  // provider      Provider[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   
