@@ -1,8 +1,10 @@
 'use client'
 import Calender from "@/app/components/(public)/booking/Clendar/Calender"
+import Confirm from "@/app/components/(public)/booking/Comfirm/Confirm"
 import Member from "@/app/components/(public)/booking/Member/Member"
 import Summery from "@/app/components/(public)/booking/Summery/Summery"
 import Time from "@/app/components/(public)/booking/Time/Time"
+
 import { useState } from "react"
 
 function page() {
@@ -36,6 +38,11 @@ function page() {
         viewselected={view}/>
       case 3:
         return <Summery 
+        viewNum={setview}
+        data={bookingdata}
+        viewselected={view}/>
+      case 4:
+        return <Confirm
         viewNum={setview}
         data={bookingdata}
         viewselected={view}/>

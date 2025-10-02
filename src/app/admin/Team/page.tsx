@@ -3,8 +3,7 @@ import TeamDash from '../../components/admin/Team/TeamDash'
 function Team() {
   return (
     <div>
-        <h1>Team</h1>
-        <p>Manage your team members here.</p>
+        <h1>Manage your team members here.</h1>
         <TeamDash/>
 
     </div>

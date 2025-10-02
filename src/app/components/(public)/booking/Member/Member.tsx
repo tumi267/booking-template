@@ -1,5 +1,7 @@
 'use client'
 
+import Image from "next/image";
+
 interface Props {
   select: (val: any) => void;
   viewNum: (val: any) => void;
@@ -9,32 +11,43 @@ interface Props {
 
 function Member({ select, viewNum, viewselected, data }: Props) {
   const members = [
-    { name: "John Doe", price: 50 },
-    { name: "Jane Smith", price: 60 },
+    { name: "John Doe", price: 50, img: "/next.svg",role:'some postion' },
+    { name: "Jane Smith", price: 60, img: "/next.svg",role:'some postion' },
   ];
 
   return (
     <div className="w-[90%] mx-auto">
       <h2 className="text-xl font-semibold mb-4">Member</h2>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {members.map((member, index) => {
           const isSelected = data?.member === member.name;
+
           return (
             <div
               key={index}
-              onClick={() => select({ ...data, member: member.name, price: member.price })}
-              className={`p-4 border cursor-pointer shadow hover:shadow-lg transition
-                ${isSelected ? "bg-gray-400 " : "bg-white"}`}
+              onClick={() =>
+                select({ ...data, member: member.name, price: member.price })
+              }
+              className={`p-4 border rounded-lg cursor-pointer shadow hover:shadow-lg transition
+                ${isSelected ? "bg-gray-400 border-gray-400" : "bg-white"}`}
             >
-              <Image src={`next.svg`} height=200 width=200/>
-              <h3 className="text-lg font-semibold">{member.name}</h3>
-              <p className="text-gray-700">R{member.price}</p>
+              <Image
+                src={member.img}
+                alt={member.name}
+                height={200}
+                width={200}
+                className="mx-auto mb-2"
+              />
+              <h3 className="text-lg font-semibold text-center">{member.name}</h3>
+              <p className="text-gray-500">{member.role}</p>
+              <p className="text-gray-700 text-center">R{member.price}</p>
             </div>
           );
         })}
       </div>
 
-      <div className="flex">
+      <div className="">
         <button
           onClick={() => viewNum(viewselected - 1)}
           className=""
@@ -53,3 +66,4 @@ function Member({ select, viewNum, viewselected, data }: Props) {
 }
 
 export default Member;
+
