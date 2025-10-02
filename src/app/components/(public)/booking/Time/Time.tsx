@@ -6,8 +6,33 @@ interface Props {
     data:any
   }
 function Time({select,viewNum,viewselected,data}:Props) {
-
-    const timeSlots = ['09:00','10:00','11:00','12:00','14:00','15:00','16:00','17:00'];
+  const startTime = "09:00";
+  const endTime = "18:00";
+  const intervalMinutes = 60; // interval between slots
+  
+  function generateTimeSlots(start: string, end: string, interval: number) {
+    const slots: string[] = [];
+  
+    let [startHour, startMinute] = start.split(":").map(Number);
+    let [endHour, endMinute] = end.split(":").map(Number);
+  
+    let current = new Date();
+    current.setHours(startHour, startMinute, 0, 0);
+  
+    const endDate = new Date();
+    endDate.setHours(endHour, endMinute, 0, 0);
+  
+    while (current <= endDate) {
+      const hour = current.getHours().toString().padStart(2, "0");
+      const minute = current.getMinutes().toString().padStart(2, "0");
+      slots.push(`${hour}:${minute}`);
+      current.setMinutes(current.getMinutes() + interval);
+    }
+  
+    return slots;
+  }
+  
+  const timeSlots = generateTimeSlots(startTime, endTime, intervalMinutes);
 
   return (
     <div>
