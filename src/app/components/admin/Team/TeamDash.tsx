@@ -23,12 +23,16 @@ function TeamDash() {
   const [openupdateMemberModal, setOpenUpdateMemberModal] = useState(false)
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
 
+// we need a loading state
+const getteam=async()=>{
+  const response = await fetch('/api/team')
+  const data = await response.json()
+  setTeamMembers(data)
+}
 useEffect(() => {
   const fetchTeamMembers = async () => {
     try {
-      const response = await fetch('/api/team')
-      const data = await response.json()
-      setTeamMembers(data) // Assuming data is an array of team members
+      getteam()
     } catch (error) {
       console.error('Error fetching team members:', error)
     }
@@ -42,9 +46,24 @@ useEffect(() => {
     setIsAddTeamMemberOpen(!isAddTeamMemberOpen)
   }
 
-  const handleEdit = (member: Member) => {
+  const handleEdit = async(member: Member) => {
     setSelectedMember(member) // pass full member object
     setOpenUpdateMemberModal(true)
+  }
+  const handleDelete=async(member:Member)=>{
+    try {
+      const response = await fetch('/api/team',{
+        method:"DELETE",
+        headers:{'Content-Type': 'application/json'},
+        body:JSON.stringify(member)
+      })
+  
+      const data = await response.json()
+     alert(`${data.firstName} ${data.lastName} was deleted`)
+     getteam()
+    } catch (error) {
+      console.error('Error fetching team members:', error)
+    }
   }
 if (isloading) {
   return <div>Loading...</div>
@@ -79,20 +98,21 @@ if (isloading) {
       ) : (
         teamMembers.map((member, index) => (
         <tr key={index} className="text-center">
-          <td className="border px-4 py-2 flex justify-center">
+          <td className="border px-2 h-16 flex justify-center">
+          <div className='h-full w-full  relative mx-auto '>
           <Image
-            src={member.image}
+            src={'/next.svg'}
             alt={member.firstName}
-            width={50}
-            height={50}
+            fill
             className="rounded-full"
           />
+          </div>
           </td>
           <td className="border px-4 py-2">{member.firstName} {member.lastName}</td>
           <td className="border px-4 py-2">{member.role}</td>
           <td className="border px-4 py-2">
             <button className="bg-green-500 text-white px-2 py-1 rounded mr-2" onClick={() => handleEdit(member)}>Edit</button>
-            <button className="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+            <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={()=>{handleDelete(member)}}>Delete</button>
           </td>
         </tr>
         ))

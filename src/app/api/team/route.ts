@@ -1,5 +1,5 @@
 // /app/api/team/route.ts
-import { createUser, getUsers, updateUser } from '@/app/libs/users/user'
+import { createUser, deleteUser, getUsers, updateUser } from '@/app/libs/users/user'
 import { NextResponse } from 'next/server'
 
 
@@ -40,6 +40,29 @@ export async function PUT(
     }
 
     return NextResponse.json(updated, { status: 200 })
+  } catch (error) {
+    console.error('Error updating member:', error)
+    return NextResponse.json(
+      { msg: 'Error updating member' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  req: Request,
+) {
+  try {
+    const body = await req.json()
+    // updateUser should handle actual DB update
+  
+    const deleted = await deleteUser(body.id)
+
+    if (!deleted) {
+      return NextResponse.json({ msg: 'Member not found' }, { status: 404 })
+    }
+
+    return NextResponse.json(deleted, { status: 200 })
   } catch (error) {
     console.error('Error updating member:', error)
     return NextResponse.json(
