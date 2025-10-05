@@ -1,6 +1,7 @@
 'use client'
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface Props {
   select: (val: any) => void;
@@ -8,12 +9,31 @@ interface Props {
   viewselected: number;
   data: any;
 }
-
+interface TeamMember {
+  firstName: string;
+  lastName: string;
+  role: string;
+  price: number;
+  avatar?: string;
+}
 function Member({ select, viewNum, viewselected, data }: Props) {
-  const members = [
-    { name: "John Doe", price: 50, img: "/next.svg",role:'some postion' },
-    { name: "Jane Smith", price: 60, img: "/next.svg",role:'some postion' },
-  ];
+  // need a loading state
+  const [members,setMembers]=useState<TeamMember[]>([])
+  const getteam=async()=>{
+    const response = await fetch('/api/team')
+    const data = await response.json()
+    setMembers(data)
+  }
+  useEffect(()=>{
+    const fetchTeamMembers = async () => {
+      try {
+        getteam()
+      } catch (error) {
+        console.error('Error fetching team members:', error)
+      }
+    }
+    fetchTeamMembers() 
+  },[])
 
   return (
     <div className="w-[90%] mx-auto">
@@ -21,27 +41,27 @@ function Member({ select, viewNum, viewselected, data }: Props) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {members.map((member, index) => {
-          const isSelected = data?.member === member.name;
+          const isSelected = data?.firstName === member.firstName;
 
           return (
             <div
               key={index}
               onClick={() =>
-                select({ ...data, member: member.name, price: member.price })
+                select({ ...data, firstName: member.firstName, lastName: member.lastName,price: member.price})
               }
               className={`p-4 border rounded-lg cursor-pointer shadow hover:shadow-lg transition
                 ${isSelected ? "bg-gray-400 border-gray-400" : "bg-white"}`}
             >
               <Image
-                src={member.img}
-                alt={member.name}
+                src={'next.svg'}
+                alt={member.firstName}
                 height={200}
                 width={200}
                 className="mx-auto mb-2"
               />
-              <h3 className="text-lg font-semibold text-center">{member.name}</h3>
+              <h3 className="text-lg font-semibold text-center">{member.firstName} {member.lastName}</h3>
               <p className="text-gray-500">{member.role}</p>
-              <p className="text-gray-700 text-center">R{member.price}</p>
+              {member.price&&<p className="text-gray-700 text-center">R{member.price}</p>}
             </div>
           );
         })}

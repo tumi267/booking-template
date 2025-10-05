@@ -7,6 +7,7 @@ interface Props {
 }
 
 function Summery({ viewNum, viewselected, data }: Props) {
+  
   return (
     <div className="w-[90%] mx-auto">
       <h2 className="text-xl font-semibold mb-4">Summary</h2>
@@ -25,10 +26,10 @@ function Summery({ viewNum, viewselected, data }: Props) {
               <td className="p-2">{data.time}</td>
             </tr>
           )}
-          {data.member && (
+          {data.firstName && (
             <tr className="border-b">
               <td className="p-2 font-semibold">Member</td>
-              <td className="p-2">{data.member}</td>
+              <td className="p-2">{data.firstName} {data.lastName}</td>
             </tr>
           )}
           {data.price && (

@@ -11,7 +11,8 @@ function page() {
   const [bookingdata,setbookingdata]=useState({
     date:"",
     time:"",
-    member:"",
+    firstName:"",
+    lastName:"",
     price:""
   })
   const [view,setview]=useState(0)
