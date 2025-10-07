@@ -10,6 +10,7 @@ function Nav() {
         <Link href='/admin/ContentManagement'>Content Management</Link>
         <Link href='/admin/Team'>Team</Link>
         <Link href='/admin/Reports'>Reports</Link>
+        <Link href='/admin/Services'>Services</Link>
     </nav>
     </div>
   )

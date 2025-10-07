@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient,BookingStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 // CREATE Booking
@@ -98,4 +98,14 @@ const createBooking = async (bookingData: {
     return await prisma.booking.delete({
       where: { id }
     })
+  }
+  export {
+    createBooking,
+    getAllBookings,
+    getBookingById,
+    getBookingsByClient,
+    getBookingsByProvider,
+    updateBooking,
+    updateBookingServices,
+    deleteBooking
   }
