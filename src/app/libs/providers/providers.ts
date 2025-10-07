@@ -2,51 +2,67 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Create a provider
-export const createProvider = async (data: {
-  userId: string;
-  imageurl?: string;
-  jobTitle?: string;
-  bio?: string;
-  hourlyRate: number;
+
+// CREATE Provider
+export const createProvider = async (providerData: {
+  userId: string
+  jobTitle?: string
+  bio?: string
+  imageurl?: string
+  hourlyRate: number
 }) => {
-  return prisma.provider.create({ data });
-};
+  return await prisma.provider.create({
+    data: providerData,
+    include: { user: true, services: true, bookingSettings: true }
+  })
+}
 
-// Get all providers
-export const getProviders = async () => {
-  return prisma.provider.findMany({
-    include: { user: true, Service: true },
-  });
-};
+// READ Providers
+export const getAllProviders = async () => {
+  return await prisma.provider.findMany({
+    include: { user: true, services: true }
+  })
+}
 
-// Get provider by ID
 export const getProviderById = async (id: string) => {
-  return prisma.provider.findUnique({
+  return await prisma.provider.findUnique({
     where: { id },
-    include: { user: true, Service: true },
-  });
-};
+    include: { 
+      user: true, 
+      services: true, 
+      bookings: true,
+      operatingHours: true,
+      bookingSettings: true
+    }
+  })
+}
 
-// Update provider
-export const updateProvider = async (id: string, data: Partial<{
-  imageurl: string;
-  jobTitle: string;
-  bio: string;
-  hourlyRate: number;
-  rating: number;
-  totalReviews: number;
-  isAvailable: boolean;
-}>) => {
-  return prisma.provider.update({
+export const getProviderByUserId = async (userId: string) => {
+  return await prisma.provider.findUnique({
+    where: { userId },
+    include: { user: true, services: true, bookingSettings: true }
+  })
+}
+
+// UPDATE Provider
+export const updateProvider = async (id: string, updateData: {
+  jobTitle?: string
+  bio?: string
+  imageurl?: string
+  hourlyRate?: number
+  rating?: number
+  totalReviews?: number
+  isAvailable?: boolean
+}) => {
+  return await prisma.provider.update({
     where: { id },
-    data,
-  });
-};
+    data: updateData
+  })
+}
 
-// Delete provider
+// DELETE Provider
 export const deleteProvider = async (id: string) => {
-  return prisma.provider.delete({
-    where: { id },
-  });
-};
+  return await prisma.provider.delete({
+    where: { id }
+  })
+}

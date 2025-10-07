@@ -7,10 +7,6 @@ datasource db {
   url               = env("DATABASE_URL")
   directUrl         = env("DIRECT_URL")
 }
-model Test {
-  id    String @id
-  email String @unique
-}
 
 model User {
   id            String    @id @default(uuid())
@@ -20,11 +16,10 @@ model User {
   lastName      String
   phone         String?
   role          UserRole  @default(CLIENT)
-  provider  Provider?
- // appoiments    appoiments[]
+  provider      Provider?
+  bookings      Booking[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
 }
 
 model Provider {
@@ -32,16 +27,18 @@ model Provider {
   imageurl      String?
   jobTitle      String?
   bio           String?
-  user         User      @relation(fields: [userId], references: [id])
-  userId        String @unique
-  // Service       Service[]
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String    @unique
+  services      Service[]
+  bookings      Booking[]
+  operatingHours OperatingHours[]
+  bookingSettings BookingSettings? // Add this reverse relation
   hourlyRate    Float
   rating        Float?    @default(0)
   totalReviews  Int       @default(0)
   isAvailable   Boolean   @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
 }
 
 model Service {
@@ -50,13 +47,56 @@ model Service {
   description   String?
   duration      Int       // in minutes
   price         Float
-  // provider      Provider[]
+  providers     Provider[]
+  bookings      Booking[]
+  isActive      Boolean   @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
 }
 
+model Booking {
+  id            String    @id @default(uuid())
+  client        User      @relation(fields: [clientId], references: [id])
+  clientId      String
+  provider      Provider  @relation(fields: [providerId], references: [id])
+  providerId    String
+  services      Service[]
+  teamMembers   String[]  // Array of team member names
+  price         Float
+  sessionDuration Int     // in minutes
+  startTime     DateTime
+  endTime       DateTime
+  status        BookingStatus @default(PENDING)
+  specialRequests String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
 
+model OperatingHours {
+  id            String    @id @default(uuid())
+  provider      Provider  @relation(fields: [providerId], references: [id])
+  providerId    String
+  dayOfWeek     Int       // 0-6 (Sunday-Saturday)
+  startTime     String    // Format: "HH:MM"
+  endTime       String    // Format: "HH:MM"
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([providerId, dayOfWeek])
+}
+
+model BookingSettings {
+  id            String    @id @default(uuid())
+  provider      Provider  @relation(fields: [providerId], references: [id])
+  providerId    String    @unique
+  defaultSessionDuration Int @default(60) // in minutes
+  defaultPrice  Float     @default(650.00)
+  availableServices String[] // Array of service IDs or names
+  teamMembers   String[]  // Array of team member names
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
 
 enum UserRole {
   CLIENT
@@ -64,5 +104,11 @@ enum UserRole {
   ADMIN
 }
 
-
-
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}

@@ -2,48 +2,50 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Create a service
-export const createService = async (data: {
-  name: string;
-  description?: string;
-  duration: number;
-  price: number;
-  providerId: string;
+// CREATE Service
+export const createService = async (serviceData: {
+  name: string
+  description?: string
+  duration: number
+  price: number
 }) => {
-  return prisma.service.create({ data });
-};
+  return await prisma.service.create({
+    data: serviceData
+  })
+}
 
-// Get all services
-export const getServices = async () => {
-  return prisma.service.findMany({
-    include: { provider: true },
-  });
-};
+// READ Services
+export const getAllServices = async () => {
+  return await prisma.service.findMany({
+    where: { isActive: true }
+  })
+}
 
-// Get service by ID
 export const getServiceById = async (id: string) => {
-  return prisma.service.findUnique({
+  return await prisma.service.findUnique({
     where: { id },
-    include: { provider: true },
-  });
-};
+    include: { providers: true, bookings: true }
+  })
+}
 
-// Update service
-export const updateService = async (id: string, data: Partial<{
-  name: string;
-  description: string;
-  duration: number;
-  price: number;
-}>) => {
-  return prisma.service.update({
+// UPDATE Service
+export const updateService = async (id: string, updateData: {
+  name?: string
+  description?: string
+  duration?: number
+  price?: number
+  isActive?: boolean
+}) => {
+  return await prisma.service.update({
     where: { id },
-    data,
-  });
-};
+    data: updateData
+  })
+}
 
-// Delete service
+// DELETE Service (soft delete)
 export const deleteService = async (id: string) => {
-  return prisma.service.delete({
+  return await prisma.service.update({
     where: { id },
-  });
-};
+    data: { isActive: false }
+  })
+}
