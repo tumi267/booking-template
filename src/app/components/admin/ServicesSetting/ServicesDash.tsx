@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
+import CreateService from './CreateService/CreateService'
 
 interface ServiceType {
   id: string
@@ -12,7 +13,7 @@ interface ServiceType {
 function ServicesDash() {
   const [services, setServices] = useState<ServiceType[]>([])
   const [loading, setLoading] = useState(true)
-
+  const [isCreate,setIsCreate]=useState(false)
   useEffect(() => {
     const getServices = async () => {
       try {
@@ -27,11 +28,17 @@ function ServicesDash() {
     }
     getServices()
   }, [])
-
+  const opencreatemodule=()=>{
+    setIsCreate(!isCreate)
+  }
   if (loading) return <p>Loading services...</p>
 
   return (
     <div>
+      <button className='bg-black text-white p-[0.5em]' onClick={opencreatemodule}>Add Service</button>
+      {isCreate&&<CreateService
+      openCreateModule={opencreatemodule}
+      />}
       {services.length === 0 && <h2>No services returned</h2>}
       {services.length > 0 &&
         services.map((service) => (
