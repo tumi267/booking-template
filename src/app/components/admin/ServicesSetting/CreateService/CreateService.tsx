@@ -1,18 +1,23 @@
 'use client'
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 
+interface Providers{
+  id: string;   
+  firstName: string;
+  lastName: string;
+  imageurl: string;
+  bio: string;
+  email: string;
+}
 interface Service {
   name: string;
   description: string;
-  duration: string;
+  duration: number; // Changed from string to number
   price: number;
   providers: string[];
 }
 
-interface Provider {
-  id: string;
-  name: string;
-}
+
 
 interface CreateServiceProps {
   openCreateModule: () => void;
@@ -22,24 +27,26 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
   const [service, setService] = useState<Service>({
     name: '',
     description: '',
-    duration: '',
+    duration: 0, // Changed from '' to 0
     price: 0,
     providers: []
   });
 
   // Mock data for providers - replace with actual data from props/API
-  const availableProviders: Provider[] = [
-    { id: '1', name: 'John Doe' },
-    { id: '2', name: 'Jane Smith' },
-    { id: '3', name: 'Mike Johnson' },
-    { id: '4', name: 'Sarah Wilson' },
-    { id: '5', name: 'David Brown' },
-  ];
-
+  const [availableProviders,setAvailableProviders]=useState<Providers[]>([])
+  useEffect(()=>{
+   const getproviders=async()=>{
+    const res=await fetch('/api/team/getActiveProvider')
+    const providers=await res.json()
+ 
+    setAvailableProviders(providers)
+   }
+   getproviders()
+  })
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
-    if (name === 'price') {
+    if (name === 'price' || name === 'duration') {
       setService(prev => ({ ...prev, [name]: parseFloat(value) || 0 }));
     } else {
       setService(prev => ({ ...prev, [name]: value }));
@@ -75,7 +82,7 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
   const getSelectedProviderNames = (): string[] => {
     return service.providers.map(providerId => {
       const provider = availableProviders.find(p => p.id === providerId);
-      return provider ? provider.name : '';
+      return provider ? provider.firstName : '';
     }).filter(name => name !== '');
   };
 
@@ -83,9 +90,21 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
     return service.providers.includes(providerId);
   };
 
+  const handlesubmit =async (e: React.FormEvent)=>{
+    e.preventDefault();
+    const sub=await fetch('/api/services',
+    {method:'POST',
+    headers:{'Content-Type': 'application/json' },
+    body:JSON.stringify({...service})})
+    const res=await sub.json()
+    console.log(res)
+    if(res.status== 201){
+      openCreateModule()
+    }
+  }
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-      <form className='bg-white p-6 shadow-xl w-96 max-h-[90vh] overflow-y-auto'>
+      <form className='bg-white p-6 shadow-xl w-96 max-h-[90vh] overflow-y-auto' onSubmit={handlesubmit}>
         <div className='flex justify-between items-center mb-4'>
           <h2 className='text-xl font-semibold'>Create Service</h2>
           <button 
@@ -113,16 +132,19 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
           </div>
           
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-1'>
-              Description
-            </label>
+          <label className='block text-sm font-medium text-gray-700 mb-1'>
+          Duration (minutes)
+           </label>
             <input 
-              type="text" 
-              name="description"
-              placeholder="Description"
-              value={service.description} 
+              type="number"  // Changed from "text" to "number"
+              name="duration"
+              placeholder="Duration in minutes (e.g., 60)"
+              value={service.duration} 
               onChange={handleInputChange}
-              className='w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
+              min="15"
+              step="15" // Optional: force 15-minute increments
+              className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
+              required
             />
           </div>
           
@@ -144,13 +166,13 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
           
           <div>
             <label className='block text-sm font-medium text-gray-700 mb-1'>
-              Duration
+              Description
             </label>
             <input 
               type="text" 
-              name="duration"
-              placeholder="Duration (e.g., 30min, 1h)"
-              value={service.duration} 
+              name="description"
+              placeholder="Description"
+              value={service.description} 
               onChange={handleInputChange}
               className='w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
             />
@@ -207,7 +229,7 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
                   <span className={`ml-3 text-sm ${
                     isProviderSelected(provider.id) ? 'text-blue-800 font-medium' : 'text-gray-700'
                   }`}>
-                    {provider.name}
+                    {provider.firstName}
                   </span>
                 </div>
               ))}
@@ -227,12 +249,7 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
             Cancel
           </button>
           <button
-            type='button'
-            onClick={() => {
-              // Handle form submission here
-              console.log('Service data:', service);
-              // openCreateModule();
-            }}
+            type='submit'
             className='px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors'
           >
             Create Service

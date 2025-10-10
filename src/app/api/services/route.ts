@@ -28,13 +28,17 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { name, description, duration, price } = body
+    const { name, description, duration, price, providers } = body
 
     if (!name || !duration || !price) {
       return NextResponse.json({ msg: "Missing required fields" }, { status: 400 })
     }
 
-    const newService = await createService({ name, description, duration, price })
+    const newService = await createService({ 
+      name, 
+      description, 
+    })
+    
     return NextResponse.json(newService, { status: 201 })
   } catch (error) {
     console.error("Error creating service:", error)
@@ -43,17 +47,19 @@ export async function POST(req: Request) {
 }
 
 // ✅ PUT (Update)
-export async function PUT(req: Request) {
+export async function PUT(
+  req: Request
+) {
   try {
     const body = await req.json()
-    const { id, ...updateData } = body
+    const { name, description, duration, price, providers ,id} = body
 
-    if (!id) {
-      return NextResponse.json({ msg: "Service ID is required" }, { status: 400 })
-    }
+    const updatedService = await updateService(id, {
+      name,
+      providers // Make sure this is passed
+    })
 
-    const updatedService = await updateService(id, updateData)
-    return NextResponse.json(updatedService, { status: 200 })
+    return NextResponse.json(updatedService)
   } catch (error) {
     console.error("Error updating service:", error)
     return NextResponse.json({ msg: "Failed to update service" }, { status: 500 })

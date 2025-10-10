@@ -6,11 +6,14 @@ const prisma = new PrismaClient();
 export const createService = async (serviceData: {
   name: string
   description?: string
-  duration: number
-  price: number
+
+  providers?: string[] // Add providers support
 }) => {
   return await prisma.service.create({
-    data: serviceData
+    data: {
+      name: serviceData.name,
+      description: serviceData.description,
+    }
   })
 }
 
@@ -18,13 +21,13 @@ export const createService = async (serviceData: {
 export const getAllServices = async () => {
   return await prisma.service.findMany({
     where: { isActive: true }
+   
   })
 }
 
 export const getServiceById = async (id: string) => {
   return await prisma.service.findUnique({
-    where: { id },
-    include: { providers: true, bookings: true }
+    where: { id }
   })
 }
 
@@ -35,11 +38,16 @@ export const updateService = async (id: string, updateData: {
   duration?: number
   price?: number
   isActive?: boolean
+  providers?: string[] // Add providers support
 }) => {
   return await prisma.service.update({
     where: { id },
-    data: updateData
-  })
+    data: {
+      name: updateData.name,
+      description: updateData.description,
+      isActive: updateData.isActive,
+      
+  }})
 }
 
 // DELETE Service (soft delete)

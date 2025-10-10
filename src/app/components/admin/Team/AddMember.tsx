@@ -1,111 +1,184 @@
 'use client'
 import React, { useState } from 'react'
+import { ProviderRole } from '@prisma/client'
+
+interface NewProvider {
+  firstName: string
+  lastName: string
+  email?: string
+  imageurl?: string
+  bio?: string
+  role: ProviderRole
+}
+
 interface AddMemberProps {
   openAddTeamMember: () => void
 }
 
 function AddMember({ openAddTeamMember }: AddMemberProps) {
-
-    const [newTeamMember, setNewTeamMember] = useState({
+  const [newProvider, setNewProvider] = useState<NewProvider>({
     firstName: '',
     lastName: '',
-    role: '',
     email: '',
-    phone: '',
     imageurl: '',
+    bio: '',
+    role: ProviderRole.TRAINER,
   })
-  const handleNewTeamMemberSubmit = (e: React.FormEvent) => {
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    // Here you would typically send newTeamMember to your backend API
-    addMember() 
-  }
-
-  const addMember=async()=>{
+    setIsLoading(true)
+    
     try {
       const response = await fetch('/api/team', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newTeamMember),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          // Provider fields (direct fields from your schema)
+          firstName: newProvider.firstName,
+          lastName: newProvider.lastName,
+          email: newProvider.email,
+          imageurl: newProvider.imageurl,
+          bio: newProvider.bio,
+          role: newProvider.role,
+        }),
       })
- console.log('Response status:', response.status)
-      if (response.status==201) {
-        const createdMember = await response.json()
-        
-          
-        
-        openAddTeamMember() // Close the modal after successful creation
-      }else if(response.status==250){
-        alert('Member with this email already exists')
-      }
-       else {
-        console.error('Failed to create member')
+
+      if (response.status === 201) {
+        const createdProvider = await response.json()
+        console.log('Created provider:', createdProvider)
+        openAddTeamMember()
+      } else if (response.status === 409) {
+        alert('Provider with this email already exists')
+      } else {
+        const error = await response.json()
+        console.error('Failed to create provider:', error)
+        alert(error.msg || 'Failed to create provider')
       }
     } catch (error) {
-      console.error('Error creating member:', error)
-    } 
+      console.error('Error creating provider:', error)
+      alert('Error creating provider')
+    } finally {
+      setIsLoading(false)
+    }
   }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded shadow-lg w-96">
-        <h2 className="text-xl mb-4">Add Team Member</h2>
-        <form onSubmit={handleNewTeamMemberSubmit}>
-          <div className="mb-4">
-            <label className="block mb-1">First Name</label>
-            <input type="text" className="w-full border px-3 py-2 rounded" 
-            onChange={(e) =>
-            setNewTeamMember({ ...newTeamMember, firstName: e.target.value })
-             }
+      <div className="bg-white p-6 shadow-lg w-96 max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between px-4 items-center">
+          <h2 className="text-xl mb-4 font-semibold">Add Provider</h2>
+          <button className='text-xl mb-4 font-semibold' onClick={openAddTeamMember}>x</button>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="block mb-1">First Name *</label>
+            <input
+              type="text"
+              className="w-full border px-3 py-2 rounded"
+              value={newProvider.firstName}
+              onChange={(e) =>
+                setNewProvider({ ...newProvider, firstName: e.target.value })
+              }
+              disabled={isLoading}
+              required
             />
           </div>
-          <div className="mb-4">
-            <label className="block mb-1">Last Name</label>
-            <input type="text" className="w-full border px-3 py-2 rounded" 
-                        onChange={(e) =>
-            setNewTeamMember({ ...newTeamMember, lastName: e.target.value })
-             }
+
+          <div className="mb-3">
+            <label className="block mb-1">Last Name *</label>
+            <input
+              type="text"
+              className="w-full border px-3 py-2 rounded"
+              value={newProvider.lastName}
+              onChange={(e) =>
+                setNewProvider({ ...newProvider, lastName: e.target.value })
+              }
+              disabled={isLoading}
+              required
             />
           </div>
-          <div className="mb-4">
-            <label className="block mb-1">Role</label>
-            <input type="text" className="w-full border px-3 py-2 rounded" 
-            onChange={(e) =>
-            setNewTeamMember({ ...newTeamMember, role: e.target.value })
-             }
-            />
-          </div>
-          <div className="mb-4">
+
+          <div className="mb-3">
             <label className="block mb-1">Email</label>
-            <input type="email" className="w-full border px-3 py-2 rounded" 
-            onChange={(e) =>
-            setNewTeamMember({ ...newTeamMember, email: e.target.value })
-             }
+            <input
+              type="email"
+              className="w-full border px-3 py-2 rounded"
+              value={newProvider.email}
+              onChange={(e) =>
+                setNewProvider({ ...newProvider, email: e.target.value })
+              }
+              disabled={isLoading}
             />
           </div>
-          <div className="mb-4">
-            <label className="block mb-1">Phone</label>
-            <input type="text" className="w-full border px-3 py-2 rounded" 
-            onChange={(e) =>
-            setNewTeamMember({ ...newTeamMember, phone: e.target.value })
-             }
+
+          <div className="mb-3">
+            <label className="block mb-1">Bio</label>
+            <textarea
+              className="w-full border px-3 py-2 rounded"
+              value={newProvider.bio}
+              onChange={(e) =>
+                setNewProvider({ ...newProvider, bio: e.target.value })
+              }
+              disabled={isLoading}
+              rows={3}
             />
           </div>
-          <div className="mb-4">
+
+          <div className="mb-3">
             <label className="block mb-1">Image URL</label>
-            <input type="text" className="w-full border px-3 py-2 rounded" />
+            <input
+              type="text"
+              className="w-full border px-3 py-2 rounded"
+              value={newProvider.imageurl}
+              onChange={(e) =>
+                setNewProvider({ ...newProvider, imageurl: e.target.value })
+              }
+              disabled={isLoading}
+              placeholder="https://example.com/image.jpg"
+            />
           </div>
-          <div className="flex justify-end">
+
+          <div className="mb-3">
+            <label className="block mb-1">Provider Role</label>
+            <select
+              className="w-full border px-3 py-2 rounded"
+              value={newProvider.role}
+              onChange={(e) =>
+                setNewProvider({
+                  ...newProvider,
+                  role: e.target.value as ProviderRole,
+                })
+              }
+              disabled={isLoading}
+            >
+              {Object.values(ProviderRole).map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex justify-end mt-4">
             <button
               type="button"
-              className="bg-gray-300 text-black px-4 py-2 rounded mr-2"
+              className="bg-gray-300 text-black px-4 py-2 mr-2"
               onClick={openAddTeamMember}
+              disabled={isLoading}
             >
               Cancel
             </button>
-            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-              Add
+            <button
+              type="submit"
+              className={`px-4 py-2 text-white ${
+                isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500'
+              }`}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Adding...' : 'Add Provider'}
             </button>
           </div>
         </form>
@@ -113,4 +186,5 @@ function AddMember({ openAddTeamMember }: AddMemberProps) {
     </div>
   )
 }
+
 export default AddMember
