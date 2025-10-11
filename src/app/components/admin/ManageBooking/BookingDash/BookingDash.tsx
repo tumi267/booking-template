@@ -15,23 +15,23 @@ interface Member {
 function BookingDash() {
     const [menu,setmenu]=useState(0)
     const [teamMembers, setTeamMembers] = useState<Member[]>([])
-    const getteam=async()=>{
-      const response = await fetch('/api/team')
-      const data = await response.json()
-      setTeamMembers(data)
-    }
+//     const getteam=async()=>{
+//       const response = await fetch('/api/team')
+//       const data = await response.json()
+//       setTeamMembers(data)
+//     }
     
-useEffect(() => {
-  const fetchTeamMembers = async () => {
-    try {
-      getteam()
-    } catch (error) {
-      console.error('Error fetching team members:', error)
-    }
-  }
-  fetchTeamMembers() // <-- actually call the function
-  // setIsLoading(false)
-}, []) // <-- add dependencies here
+// useEffect(() => {
+//   const fetchTeamMembers = async () => {
+//     try {
+//       getteam()
+//     } catch (error) {
+//       console.error('Error fetching team members:', error)
+//     }
+//   }
+//   fetchTeamMembers() // <-- actually call the function
+//   // setIsLoading(false)
+// }, []) // <-- add dependencies here
   return (
     <div> 
     <section className='flex justify-center gap-[0.5em] p-[2em]'>
@@ -41,7 +41,7 @@ useEffect(() => {
     <section>
     {menu==0&&<ViewBooking/>}
     {menu==1&&<BookingSettings
-    teamMembers={teamMembers}/>}
+    />}
     </section>
     </div>
   )

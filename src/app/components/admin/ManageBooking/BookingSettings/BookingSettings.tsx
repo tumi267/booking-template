@@ -38,7 +38,7 @@ interface BookingSettingsData {
   defaultPrice: number
 }
 
-function BookingSettings({ teamMembers }: MemberProps) {
+function BookingSettings() {
   const [services, setServices] = useState<Service[]>([])
   const [providers, setProviders] = useState<Provider[]>([])
   const [existingSettings, setExistingSettings] = useState<BookingSettingsData[]>([])
@@ -82,13 +82,31 @@ function BookingSettings({ teamMembers }: MemberProps) {
     }
   }
 
+
+//   must be by id
   const fetchExistingSettings = async () => {
     try {
       const res = await fetch(`/api/booking-settings`)
       if (res.ok) {
         const data = await res.json()
+        
         if(data.length > 0){
-          setExistingSettings(data)
+        
+          const existingSetting = data[0]
+          
+          // Convert the API data to match your Booking interface
+          setBooking({
+            members: [
+              {
+                id: existingSetting.providerId,
+                memberName: `${existingSetting.provider.firstName} ${existingSetting.provider.lastName}`
+              }
+            ],
+            services: [existingSetting.service.name],
+            price: existingSetting.defaultPrice,
+            session: existingSetting.defaultSessionDuration,
+            specials: [] // You can populate this if you have specials data
+          })
           // Optionally pre-populate form with existing settings
           // const firstSetting = data[0]
           // setBooking(prev => ({
@@ -225,19 +243,19 @@ function BookingSettings({ teamMembers }: MemberProps) {
                   key={service.id} 
                   type="button"
                   className={`border px-3 py-2 rounded transition ${
-                    booking.services.includes(service.name) 
+                    booking?.services.includes(service.name) 
                       ? 'bg-blue-100 border-blue-300' 
                       : 'hover:bg-gray-50'
                   }`}
                   onClick={() => handleAddService(service.name)}
-                  disabled={booking.services.includes(service.name)}
+                  disabled={booking?.services.includes(service.name)}
                 >
                   {service.name}
                 </button>
               ))}
             </div>
           </div>
-          {booking.services.length > 0 && (
+          {booking?.services.length > 0 && (
             <div className="mt-4">
               <label className="block text-sm font-medium mb-2">Selected Services</label>
               <div className='flex gap-2 flex-wrap'>
@@ -262,7 +280,7 @@ function BookingSettings({ teamMembers }: MemberProps) {
           <div>
             <label className="block text-sm font-medium mb-2">Available Members</label>
             <div className='flex gap-2 flex-wrap'>
-              {teamMembers.map((member) => (
+              {providers.map((member) => (
                 <button 
                   key={member.id} 
                   type="button"
