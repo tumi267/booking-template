@@ -123,7 +123,8 @@ function Calendar({ select, viewNum, viewselected, data, avaiableDate }: Props) 
           className="">
           Prev
         </button>
-      <button onClick={() => viewNum(viewselected + 1)}>next</button>
+      <button onClick={() => viewNum(viewselected + 1)} 
+      disabled={data.date === ""}>next</button>
     </div>
   );
 }

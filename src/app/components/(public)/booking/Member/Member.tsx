@@ -83,6 +83,7 @@ function Member({ select, viewNum, viewselected, data ,bookingsetting}: Props) {
         <button
           onClick={() => viewNum(viewselected + 1)}
           className=""
+          disabled={data.firstName === ""}
         >
           Next
         </button>

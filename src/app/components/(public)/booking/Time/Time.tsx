@@ -58,7 +58,7 @@ function Time({select,viewNum,viewselected,data,avaiableDate,bookingsetting}:Pro
       </div>
         <br/>
         <button onClick={()=>{viewNum(viewselected-1)}}>prev</button>
-        <button onClick={()=>{viewNum(viewselected+1)}}>next</button>
+        <button onClick={()=>{viewNum(viewselected+1)}} disabled={data.time=== ""}>next</button>
     </div>
   )
 }

@@ -35,6 +35,7 @@ function ServiceSelect({ select, viewNum,viewselected, data ,bookingsetting}: Pr
         <button
           onClick={() => viewNum(viewselected + 1)}
           className=""
+          disabled={data.serviceNum === null}
         >
           Next
         </button>
