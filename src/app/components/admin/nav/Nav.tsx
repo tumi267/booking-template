@@ -11,6 +11,7 @@ function Nav() {
         <Link href='/admin/Team'>Team</Link>
         <Link href='/admin/Reports'>Reports</Link>
         <Link href='/admin/Services'>Services</Link>
+        <Link href='/admin/OperatingHours'>Operating Hours</Link>
     </nav>
     </div>
   )

@@ -42,6 +42,7 @@ function BookingSettings() {
   const [services, setServices] = useState<Service[]>([])
   const [providers, setProviders] = useState<Provider[]>([])
   const [existingSettings, setExistingSettings] = useState<BookingSettingsData[]>([])
+  const[id,setId]=useState(null)
   const [booking, setBooking] = useState<Booking>({
     members: [],
     price: 650,
@@ -93,7 +94,7 @@ function BookingSettings() {
         if(data.length > 0){
         
           const existingSetting = data[0]
-          
+          setId(data[0].id)
           // Convert the API data to match your Booking interface
           setBooking({
             members: [
@@ -161,6 +162,7 @@ function BookingSettings() {
       // You need to decide how to handle multiple providers/services
       // This is a simplified version - you might need to adjust based on your needs
       const settingsData = {
+        id,
         providerId: booking.members[0]?.id || providers[0]?.id, // First selected member or first provider
         serviceId: services.find(s => s.name === booking.services[0])?.id || '', // First selected service
         defaultSessionDuration: booking.session,

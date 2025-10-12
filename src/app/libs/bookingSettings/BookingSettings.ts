@@ -19,9 +19,9 @@ export const createBookingSettings = async (data: {
 };
 
 // READ BookingSettings by Provider
-export const getBookingSettingsByID = async (providerId: string) => {
+export const getBookingSettingsByID = async (id: string) => {
   return await prisma.bookingSettings.findMany({
-    where: { providerId },
+    where: { id },
     include: {
       service: true,
       provider: true
