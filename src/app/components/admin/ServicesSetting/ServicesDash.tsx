@@ -129,10 +129,10 @@ function ServicesDash() {
               {service.description && (
                 <p className="text-gray-600 mb-2">{service.description}</p>
               )}
-              <div className="flex justify-between text-sm text-gray-500">
+              {/* <div className="flex justify-between text-sm text-gray-500">
                 <span>Duration: {service.duration} min</span>
                 <span className="font-semibold">R{service.price}</span>
-              </div>
+              </div> */}
               
               {/* Edit/Delete buttons */}
               <div className="mt-3 flex space-x-2">

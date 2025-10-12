@@ -5,23 +5,18 @@ interface Props {
   viewNum: (val: any) => void;
   viewselected: number;
   data: any;
+  avaiableDate: { dayOfWeek: number; isActive: boolean }[];
 }
 
-function Calendar({ select, viewNum, viewselected, data }: Props) {
+function Calendar({ select, viewNum, viewselected, data, avaiableDate }: Props) {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
 
-  // Compute first day of the month (0 = Sun, 6 = Sat)
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-
-  // Compute number of days in month
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-  // Generate days array
   const daysOfMonth = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  // Handlers for prev/next month
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
       setCurrentMonth(11);
@@ -40,11 +35,22 @@ function Calendar({ select, viewNum, viewselected, data }: Props) {
     }
   };
 
-  // Weekday labels
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  // Get active day indexes (0–6)
+  const activeDays = avaiableDate
+    ?.filter((d) => d.isActive)
+    .map((d) => d.dayOfWeek) ?? [];
+
+  // Helper: is a given date active?
+  const isDayActive = (year: number, month: number, day: number) => {
+    const dow = new Date(year, month, day).getDay();
+    return activeDays.includes(dow);
+  };
 
   return (
     <div className="w-[90%] mx-auto my-4">
+      {/* Header */}
       <div className="flex justify-between items-center mb-2">
         <button
           onClick={handlePrevMonth}
@@ -66,7 +72,7 @@ function Calendar({ select, viewNum, viewselected, data }: Props) {
         </button>
       </div>
 
-      {/* Weekday header */}
+      {/* Weekday labels */}
       <div className="grid grid-cols-7 text-center border-b font-semibold">
         {weekdays.map((day) => (
           <div key={day} className="p-2">
@@ -77,38 +83,41 @@ function Calendar({ select, viewNum, viewselected, data }: Props) {
 
       {/* Days grid */}
       <div className="grid grid-cols-7 gap-0">
-        {/* Empty slots for days before first day */}
+        {/* Empty placeholders before 1st */}
         {Array.from({ length: firstDayOfMonth }).map((_, i) => (
-          <div key={`empty-${i}`} className="min-h-[5em] border border-transparent" />
+          <div key={`empty-${i}`} className="min-h-[5em]" />
         ))}
 
-        {/* Actual days */}
         {daysOfMonth.map((d) => {
-          const selectedDate = `${currentYear}-${currentMonth + 1}-${
-            d < 10 ? `0${d}` : d
-          }`;
-
+          const date = new Date(currentYear, currentMonth, d);
+          const dow = date.getDay();
+          const isActive = isDayActive(currentYear, currentMonth, d);
           const isToday =
             d === today.getDate() &&
             currentMonth === today.getMonth() &&
             currentYear === today.getFullYear();
 
+          const selectedDate = `${currentYear}-${currentMonth + 1}-${d}`;
           const isSelected = data?.date === selectedDate;
 
           return (
             <div
               key={d}
-              className={`min-h-[5em] p-2 box-border border border-black text-right cursor-pointer
-                hover:bg-gray-200 ${
-                  isToday ? "text-red-500 font-bold" : ""
-                } ${isSelected ? "bg-gray-400 font-bold" : ""}`}
-              onClick={() => select({ ...data, date: selectedDate })}
+              className={`min-h-[5em] p-2 border text-right box-border ${
+                isActive
+                  ? "cursor-pointer hover:bg-gray-200"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              } ${isToday ? "text-red-500 font-bold" : ""} ${
+                isSelected ? "bg-gray-400 font-bold" : ""
+              }`}
+              onClick={() => isActive && select({ ...data, date: selectedDate })}
             >
               {d}
             </div>
           );
         })}
       </div>
+
       <br />
       <button onClick={() => viewNum(viewselected + 1)}>next</button>
     </div>
@@ -116,4 +125,3 @@ function Calendar({ select, viewNum, viewselected, data }: Props) {
 }
 
 export default Calendar;
-

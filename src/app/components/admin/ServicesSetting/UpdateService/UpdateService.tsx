@@ -15,8 +15,8 @@ interface Service {
   id: string;
   name: string;
   description?: string;
-  duration: number;
-  price: number;
+  // duration: number;
+  // price: number;
   providers: Provider[] | string[]; // Can be objects or IDs
 }
 
@@ -32,8 +32,8 @@ function UpdateService({ openUpdateModule, serviceToEdit, onServiceUpdated }: Up
     id: string;
     name: string;
     description: string;
-    duration: number;
-    price: number;
+    // duration: number;
+    // price: number;
     providers: string[]; // Always store as IDs
   }>({
     ...serviceToEdit,
@@ -54,7 +54,7 @@ function UpdateService({ openUpdateModule, serviceToEdit, onServiceUpdated }: Up
       const providers = await res.json()
       setAvailableProviders(providers)
     }
-    getProviders()
+    // getProviders()
   }, [])
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -116,8 +116,8 @@ function UpdateService({ openUpdateModule, serviceToEdit, onServiceUpdated }: Up
           id:service.id,
           name: service.name,
           description: service.description,
-          duration: service.duration,
-          price: service.price,
+          // duration: service.duration,
+          // price: service.price,
           providers: service.providers
         })
       });
@@ -169,7 +169,7 @@ function UpdateService({ openUpdateModule, serviceToEdit, onServiceUpdated }: Up
             />
           </div>
           
-          <div>
+          {/* <div>
             <label className='block text-sm font-medium text-gray-700 mb-1'>
               Duration (minutes)
             </label>
@@ -184,9 +184,9 @@ function UpdateService({ openUpdateModule, serviceToEdit, onServiceUpdated }: Up
               className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
               required
             />
-          </div>
+          </div> */}
           
-          <div>
+          {/* <div>
             <label className='block text-sm font-medium text-gray-700 mb-1'>
               Price
             </label>
@@ -201,7 +201,7 @@ function UpdateService({ openUpdateModule, serviceToEdit, onServiceUpdated }: Up
               className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
               required
             />
-          </div>
+          </div> */}
           
           <div>
             <label className='block text-sm font-medium text-gray-700 mb-1'>
@@ -218,7 +218,7 @@ function UpdateService({ openUpdateModule, serviceToEdit, onServiceUpdated }: Up
           </div>
 
           {/* Providers selection */}
-          {service.providers.length > 0 && (
+          {/* {service.providers.length > 0 && (
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-2'>
                 Selected Providers ({service.providers.length})
@@ -242,9 +242,9 @@ function UpdateService({ openUpdateModule, serviceToEdit, onServiceUpdated }: Up
                 ))}
               </div>
             </div>
-          )}
+          )} */}
 
-          <div>
+          {/* <div>
             <label className='block text-sm font-medium text-gray-700 mb-2'>
               Select Providers {service.providers.length > 0 && `(${service.providers.length} selected)`}
             </label>
@@ -274,7 +274,7 @@ function UpdateService({ openUpdateModule, serviceToEdit, onServiceUpdated }: Up
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className='flex justify-end space-x-3 mt-6'>

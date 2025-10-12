@@ -12,8 +12,8 @@ interface Providers{
 interface Service {
   name: string;
   description: string;
-  duration: number; // Changed from string to number
-  price: number;
+  // duration: number; // Changed from string to number
+  // price: number;
   providers: string[];
 }
 
@@ -27,8 +27,8 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
   const [service, setService] = useState<Service>({
     name: '',
     description: '',
-    duration: 0, // Changed from '' to 0
-    price: 0,
+    // duration: 0, // Changed from '' to 0
+    // price: 0,
     providers: []
   });
 
@@ -131,7 +131,7 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
             />
           </div>
           
-          <div>
+          {/* <div>
           <label className='block text-sm font-medium text-gray-700 mb-1'>
           Duration (minutes)
            </label>
@@ -146,9 +146,9 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
               className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
               required
             />
-          </div>
+          </div> */}
           
-          <div>
+          {/* <div>
             <label className='block text-sm font-medium text-gray-700 mb-1'>
               Price
             </label>
@@ -162,7 +162,7 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
               onChange={handleInputChange}
               className='w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
             />
-          </div>
+          </div> */}
           
           <div>
             <label className='block text-sm font-medium text-gray-700 mb-1'>
@@ -179,7 +179,7 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
           </div>
 
           {/* Selected Providers Display */}
-          {service.providers.length > 0 && (
+          {/* {service.providers.length > 0 && (
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-2'>
                 Selected Providers ({service.providers.length})
@@ -202,10 +202,10 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Providers Checkbox List */}
-          <div>
+          {/* <div>
             <label className='block text-sm font-medium text-gray-700 mb-2'>
               Select Providers {service.providers.length > 0 && `(${service.providers.length} selected)`}
             </label>
@@ -237,7 +237,7 @@ function CreateService({ openCreateModule }: CreateServiceProps) {
             <p className='text-xs text-gray-500 mt-1'>
               Click to select/deselect providers
             </p>
-          </div>
+          </div> */}
         </div>
 
         <div className='flex justify-end space-x-3 mt-6'>

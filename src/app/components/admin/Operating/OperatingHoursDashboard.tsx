@@ -38,7 +38,7 @@ export default function OperatingHoursDashboard() {
   const tabs = [
     { id: 'list' as const, label: 'View Hours' },
     { id: 'create' as const, label: 'Add Hours' },
-    { id: 'bulk' as const, label: 'Bulk Edit' }
+    // { id: 'bulk' as const, label: 'Bulk Edit' }
   ]
 
   return (
@@ -80,9 +80,9 @@ export default function OperatingHoursDashboard() {
           />
         )}
         
-        {activeTab === 'bulk' && (
+        {/* {activeTab === 'bulk' && (
           <BulkOperatingHoursEditor providers={providers} />
-        )}
+        )} */}
       </div>
     </div>
   )

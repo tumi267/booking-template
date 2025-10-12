@@ -11,7 +11,7 @@ function Nav() {
     return (
     <nav className='h-[5em] p-[2.5em] bg-black text-white items-center flex justify-between'>
         <span><p>LOGO</p></span>
-        <span className='justify-between flex w-[50%]'>{sortedLinks.map((e)=>{return <Link href={e.url} className="no-underline">{e.tag}</Link>})}</span>
+        <span className='justify-between flex w-[50%]'>{sortedLinks.map((e)=>{return <Link href={e.url} className="no-underline" key={e.tag}>{e.tag}</Link>})}</span>
     </nav>
   )
 }

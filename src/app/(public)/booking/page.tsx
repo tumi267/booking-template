@@ -5,7 +5,7 @@ import Member from "@/app/components/(public)/booking/Member/Member"
 import Summery from "@/app/components/(public)/booking/Summery/Summery"
 import Time from "@/app/components/(public)/booking/Time/Time"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 function page() {
   const [bookingdata,setbookingdata]=useState({
@@ -15,12 +15,22 @@ function page() {
     lastName:"",
     price:""
   })
+  const [daysactive,setDaysActive]=useState([])
+  const getdateopening =async () => {
+    const res = await fetch('/api/operating-hours')
+    const data=await res.json()
+    setDaysActive(data)
+  }
+  useEffect(()=>{
+    getdateopening()
+  },[])
   const [view,setview]=useState(0)
   const viewstate = () => {
     switch (view) {
       case 0:
         return <Calender 
         select={setbookingdata}
+        avaiableDate={daysactive}
         data={bookingdata}
         viewNum={setview}
         viewselected={view}
@@ -51,6 +61,7 @@ function page() {
         return <Calender 
         select={setbookingdata}
         data={bookingdata}
+        avaiableDate={daysactive}
         viewNum={setview}
         viewselected={view}/> // fallback
     }

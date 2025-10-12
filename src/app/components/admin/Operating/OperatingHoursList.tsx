@@ -90,13 +90,14 @@ export default function OperatingHoursList({ providers }: OperatingHoursListProp
   },[])
   const handleToggleActive = async (id: string, isActive: boolean) => {
     try {
-      const res = await fetch('/api/operating-hours', {
+      const res = await fetch(`/api/operating-hours/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, isActive: !isActive })
       })
 
       if (res.ok) {
+        fetchOperatingHours()
         // fetchOperatingHours(selectedProvider)
       } else {
         setError('Failed to update operating hours')
