@@ -12,7 +12,6 @@ function Calendar({ select, viewNum, viewselected, data, avaiableDate }: Props) 
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
-
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const daysOfMonth = Array.from({ length: daysInMonth }, (_, i) => i + 1);
@@ -110,7 +109,7 @@ function Calendar({ select, viewNum, viewselected, data, avaiableDate }: Props) 
               } ${isToday ? "text-red-500 font-bold" : ""} ${
                 isSelected ? "bg-gray-400 font-bold" : ""
               }`}
-              onClick={() => isActive && select({ ...data, date: selectedDate })}
+              onClick={() => isActive && select({ ...data, date: selectedDate,dayOfWeek:dow })}
             >
               {d}
             </div>
@@ -119,6 +118,11 @@ function Calendar({ select, viewNum, viewselected, data, avaiableDate }: Props) 
       </div>
 
       <br />
+      <button
+          onClick={() => viewNum(viewselected - 1)}
+          className="">
+          Prev
+        </button>
       <button onClick={() => viewNum(viewselected + 1)}>next</button>
     </div>
   );

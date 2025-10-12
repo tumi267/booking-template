@@ -4,10 +4,11 @@ interface Props {
   viewNum: (val: any) => void;
   viewselected: number;
   data: any;
+  bookingsetting:any;
 }
 
-function Summery({ viewNum, viewselected, data }: Props) {
-  
+function Summery({ viewNum, viewselected, data ,bookingsetting}: Props) {
+
   return (
     <div className="w-[90%] mx-auto">
       <h2 className="text-xl font-semibold mb-4">Summary</h2>
@@ -32,10 +33,10 @@ function Summery({ viewNum, viewselected, data }: Props) {
               <td className="p-2">{data.firstName} {data.lastName}</td>
             </tr>
           )}
-          {data.price && (
+          {bookingsetting[0].defaultPrice && (
             <tr>
               <td className="p-2 font-semibold">Price</td>
-              <td className="p-2">R{data.price}</td>
+              <td className="p-2">R{bookingsetting[data.serviceNum].defaultPrice}</td>
             </tr>
           )}
         </tbody>

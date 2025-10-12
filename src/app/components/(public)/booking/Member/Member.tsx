@@ -8,6 +8,7 @@ interface Props {
   viewNum: (val: any) => void;
   viewselected: number;
   data: any;
+  bookingsetting:any;
 }
 interface TeamMember {
   firstName: string;
@@ -16,15 +17,19 @@ interface TeamMember {
   price: number;
   avatar?: string;
 }
-function Member({ select, viewNum, viewselected, data }: Props) {
+function Member({ select, viewNum, viewselected, data ,bookingsetting}: Props) {
   // need a loading state
   const [members,setMembers]=useState<TeamMember[]>([])
   const getteam=async()=>{
+    // need to get all providers by id
     const response = await fetch('/api/team')
     const data = await response.json()
     setMembers(data)
   }
   useEffect(()=>{
+    const providerData = Array.isArray(bookingsetting[data.serviceNum]?.provider)
+  ? bookingsetting[data.serviceNum].provider
+  : [bookingsetting[data.serviceNum]?.provider].filter(Boolean);
     const fetchTeamMembers = async () => {
       try {
         getteam()
@@ -32,7 +37,8 @@ function Member({ select, viewNum, viewselected, data }: Props) {
         console.error('Error fetching team members:', error)
       }
     }
-    fetchTeamMembers() 
+   console.log(providerData)
+    // fetchTeamMembers() 
   },[])
 
   return (
@@ -47,7 +53,7 @@ function Member({ select, viewNum, viewselected, data }: Props) {
             <div
               key={index}
               onClick={() =>
-                select({ ...data, firstName: member.firstName, lastName: member.lastName,price: member.price})
+                select({ ...data, firstName: member.firstName, lastName: member.lastName})
               }
               className={`p-4 border rounded-lg cursor-pointer shadow hover:shadow-lg transition
                 ${isSelected ? "bg-gray-400 border-gray-400" : "bg-white"}`}

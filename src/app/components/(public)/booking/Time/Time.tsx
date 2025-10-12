@@ -4,12 +4,15 @@ interface Props {
     viewNum:(val:any)=>void
     viewselected:number
     data:any
+    avaiableDate: { startTime: string; endTime: string }[];
+    bookingsetting:any
   }
-function Time({select,viewNum,viewselected,data}:Props) {
-  const startTime = "09:00";
-  const endTime = "18:00";
-  const intervalMinutes = 60; // interval between slots
-  
+function Time({select,viewNum,viewselected,data,avaiableDate,bookingsetting}:Props) {
+ 
+  const startTime = avaiableDate[data.dayOfWeek]?.startTime||'09:00';
+  const endTime = avaiableDate[data.dayOfWeek]?.endTime||'17:00';
+  const intervalMinutes = bookingsetting[data.serviceNum].defaultSessionDuration||60; // interval between slots
+
   function generateTimeSlots(start: string, end: string, interval: number) {
     const slots: string[] = [];
   
