@@ -23,49 +23,48 @@ model User {
 }
 
 model Provider {
-  id            String    @id @default(uuid())
-  firstName     String
-  lastName      String
-  imageurl      String?
-  bio           String?
-  email         String?
-  user          User?      @relation(fields: [userId], references: [id])
-  userId        String?    @unique
-  bookings      Booking[]
-  // for schedule
-  // operatingHours OperatingHours[]
-  bookingSettings BookingSettings?
-  rating        Float?    @default(0)
-  totalReviews  Int?      @default(0)
-  role          ProviderRole @default(TRAINER)
-  isAvailable   Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id               String            @id @default(uuid())
+  firstName        String
+  lastName         String
+  imageurl         String?
+  bio              String?
+  email            String?
+  user             User?             @relation(fields: [userId], references: [id])
+  userId           String?           @unique
+  bookings         Booking[]
+  bookingSettings  BookingSettings[] @relation("BookingSettingsProviders")
+  rating           Float?            @default(0)
+  totalReviews     Int?              @default(0)
+  role             ProviderRole      @default(TRAINER)
+  isAvailable      Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 }
 
 model Service {
-  id            String    @id @default(uuid())
-  name          String
-  description   String?
-  bookings      Booking[]
-  bookingSettings BookingSettings[] // Add reverse relation
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id               String            @id @default(uuid())
+  name             String
+  description      String?
+  bookings         Booking[]
+  bookingSettings  BookingSettings[] // one service can have multiple settings
+  isActive         Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 }
 
 model Booking {
   id            String    @id @default(uuid())
-  client        User      @relation(fields: [clientId], references: [id])
-  clientId      String
+  client        User?      @relation(fields: [clientId], references: [id])
+  clientId      String?
   provider      Provider  @relation(fields: [providerId], references: [id])
   providerId    String
-  services      Service[]
-  teamMembers   String[]  // Array of team member names
+  services      Service @relation(fields: [serviceId],references: [id])
+  serviceId     String
   price         Float
   sessionDuration Int     // in minutes
-  startTime     DateTime
-  endTime       DateTime
+  date          DateTime
+  time          String
+  
   status        BookingStatus @default(PENDING)
   specialRequests String?
   createdAt     DateTime  @default(now())
@@ -88,15 +87,16 @@ model OperatingHours {
 }
 
 model BookingSettings {
-  id            String    @id @default(uuid())
-  provider      Provider  @relation(fields: [providerId], references: [id])
-  providerId    String    @unique
-  service       Service   @relation(fields: [serviceId], references: [id])
-  serviceId     String
-  defaultSessionDuration Int @default(60)
-  defaultPrice  Float     @default(650.00)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                      String       @id @default(uuid())
+  service                 Service      @relation(fields: [serviceId], references: [id])
+  serviceId               String
+  providers               Provider[]   @relation("BookingSettingsProviders")
+  defaultSessionDuration  Int          @default(60)
+  defaultPrice            Float        @default(650.00)
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+
+  @@unique([serviceId, id]) // optional uniqueness for cleaner duplicates
 }
 
 enum ProviderRole {

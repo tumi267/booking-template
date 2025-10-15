@@ -1,111 +1,95 @@
-import { PrismaClient,BookingStatus } from "@prisma/client";
+import { PrismaClient, BookingStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
-// CREATE Booking
-const createBooking = async (bookingData: {
-    clientId: string
-    providerId: string
-    serviceIds: string[]
-    teamMembers: string[]
-    price: number
-    sessionDuration: number
-    startTime: Date
-    endTime: Date
-    specialRequests?: string
-  }) => {
-    return await prisma.booking.create({
-      data: {
-        ...bookingData,
-        services: {
-          connect: bookingData.serviceIds.map(id => ({ id }))
-        }
-      },
-      include: {
-        client: true,
-        provider: true,
-        services: true
-      }
-    })
-  }
-  
-  // READ Bookings
-  const getAllBookings = async () => {
-    return await prisma.booking.findMany({
-      include: {
-        client: true,
-        provider: true,
-        services: true
-      }
-    })
-  }
-  
-  const getBookingById = async (id: string) => {
-    return await prisma.booking.findUnique({
-      where: { id },
-      include: {
-        client: true,
-        provider: true,
-        services: true
-      }
-    })
-  }
-  
-  const getBookingsByClient = async (clientId: string) => {
-    return await prisma.booking.findMany({
-      where: { clientId },
-      include: { provider: true, services: true }
-    })
-  }
-  
-  const getBookingsByProvider = async (providerId: string) => {
-    return await prisma.booking.findMany({
-      where: { providerId },
-      include: { client: true, services: true }
-    })
-  }
-  
-  // UPDATE Booking
-  const updateBooking = async (id: string, updateData: {
-    status?: BookingStatus
-    price?: number
-    sessionDuration?: number
-    startTime?: Date
-    endTime?: Date
-    specialRequests?: string
-    teamMembers?: string[]
-  }) => {
-    return await prisma.booking.update({
-      where: { id },
-      data: updateData
-    })
-  }
-  
-  // UPDATE Booking Services
-  const updateBookingServices = async (id: string, serviceIds: string[]) => {
-    return await prisma.booking.update({
-      where: { id },
-      data: {
-        services: {
-          set: serviceIds.map(id => ({ id }))
-        }
-      },
-      include: { services: true }
-    })
-  }
-  
-  // DELETE Booking
-  const deleteBooking = async (id: string) => {
-    return await prisma.booking.delete({
-      where: { id }
-    })
-  }
-  export {
-    createBooking,
-    getAllBookings,
-    getBookingById,
-    getBookingsByClient,
-    getBookingsByProvider,
-    updateBooking,
-    updateBookingServices,
-    deleteBooking
-  }
+
+// CREATE - Create a new booking
+export const createBooking = async (data: {
+  clientId?: string;
+  providerId: string;
+  serviceId: string;
+  price: number;
+  sessionDuration: number;
+  date: Date;
+  time: string;
+  specialRequests?: string;
+}) => {
+  return await prisma.booking.create({
+    data: {
+      ...data,
+      date: new Date(data.date),
+    },
+    include: {
+      client: true,
+      provider: true,
+      services: true,
+    },
+  });
+};
+
+// READ - Get all bookings
+export const getAllBookings = async () => {
+  return await prisma.booking.findMany({
+    include: {
+      client: true,
+      provider: true,
+      services: true,
+    },
+    orderBy: { date: 'desc' },
+  });
+};
+
+// READ - Get bookings by client
+export const getBookingsByClient = async (clientId: string) => {
+  return await prisma.booking.findMany({
+    where: { clientId },
+    include: {
+      client: true,
+      provider: true,
+      services: true,
+    },
+    orderBy: { date: 'desc' },
+  });
+};
+
+// READ - Get bookings by provider
+export const getBookingsByProvider = async (providerId: string) => {
+  return await prisma.booking.findMany({
+    where: { providerId },
+    include: {
+      client: true,
+      provider: true,
+      services: true,
+    },
+    orderBy: { date: 'desc' },
+  });
+};
+
+// UPDATE - Update booking
+export const updateBooking = async (id: string, data: {
+  status?: BookingStatus;
+  price?: number;
+  sessionDuration?: number;
+  date?: Date;
+  time?: string;
+  specialRequests?: string;
+}) => {
+  return await prisma.booking.update({
+    where: { id },
+    data: {
+      ...data,
+      ...(data.date && { date: new Date(data.date) }),
+    },
+    include: {
+      client: true,
+      provider: true,
+      services: true,
+    },
+  });
+};
+
+// DELETE - Delete booking
+export const deleteBooking = async (id: string) => {
+  return await prisma.booking.delete({
+    where: { id },
+  });
+};

@@ -29,6 +29,7 @@ function page() {
     const res = await fetch('/api/booking-settings')
     const data=await res.json()
     setBookingsetting(data)
+    console.log(data)
   }
   useEffect(()=>{
     getdateopening()
@@ -45,6 +46,13 @@ function page() {
       viewselected={view}
       />
       case 1:
+        return <Member 
+        select={setbookingdata}
+        data={bookingdata}
+        viewNum={setview}
+        bookingsetting={bookingsetting}
+        viewselected={view}/>
+      case 2:
         return <Calender 
         select={setbookingdata}
         avaiableDate={daysactive}
@@ -52,7 +60,8 @@ function page() {
         viewNum={setview}
         viewselected={view}
         />
-      case 2:
+
+      case 3:
         return <Time 
         select={setbookingdata}
         avaiableDate={daysactive}
@@ -60,13 +69,7 @@ function page() {
         bookingsetting={bookingsetting}
         viewNum={setview}
         viewselected={view}/>
-      case 3:
-        return <Member 
-        select={setbookingdata}
-        data={bookingdata}
-        viewNum={setview}
-        bookingsetting={bookingsetting}
-        viewselected={view}/>
+
       case 4:
         return <Summery 
         viewNum={setview}

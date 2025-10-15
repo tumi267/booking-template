@@ -2,13 +2,52 @@
 
 interface Props {
   viewNum: (val: any) => void;
-  viewselected: number;
+  viewselected: number
   data: any;
   bookingsetting:any;
 }
 
 function Summery({ viewNum, viewselected, data ,bookingsetting}: Props) {
-
+  const handlesubmit = async () => {
+    // Get providers for the selected service
+    const providerData = Array.isArray(bookingsetting[data.serviceNum]?.providers)
+      ? bookingsetting[data.serviceNum].providers
+      : [bookingsetting[data.serviceNum]?.providers].filter(Boolean);
+  
+    // Find the provider matching the selected firstName
+    const selectedProvider = providerData.find(
+      (p: any) => p.firstName === data.firstName
+    );
+  
+    if (!selectedProvider) {
+      alert('Provider not found!');
+      return;
+    }
+  
+    const bookinginfo = {
+      clientId: null, // optional, can be null
+      providerId: selectedProvider.id, // must be string
+      serviceId: bookingsetting[data.serviceNum].serviceId, // connect by id
+      price: bookingsetting[data.serviceNum].defaultPrice,
+      sessionDuration: bookingsetting[data.serviceNum].defaultSessionDuration,
+      time: data.time,
+      date: data.date,
+      specialRequests: "",
+    };
+  
+    try {
+      const createbooking = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookinginfo),
+      });
+  
+      const res = await createbooking.json();
+      console.log(res);
+    } catch (error) {
+      console.error('Error creating booking:', error);
+    }
+  };
   return (
     <div className="w-[90%] mx-auto">
       <h2 className="text-xl font-semibold mb-4">Summary</h2>
@@ -50,10 +89,9 @@ function Summery({ viewNum, viewselected, data ,bookingsetting}: Props) {
           Prev
         </button>
         <button
-          onClick={() => viewNum(viewselected + 1)}
-          className=""
+        onClick={handlesubmit}
         >
-          Next
+          comfirm
         </button>
       </div>
     </div>

@@ -51,7 +51,7 @@ export const getProviderById = async (id: string) => {
       user: true,
     
       bookings: true,
-      operatingHours: true,
+ 
       bookingSettings: true,
     },
   });
@@ -64,7 +64,7 @@ export const getProviderAvailable = async () => {
     include: {
       user: true,
       bookings: true,
-      operatingHours: true,
+  
       bookingSettings: true,
     }, 
     orderBy: {

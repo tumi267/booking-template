@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { name, description, duration, price, providers } = body
 
-    if (!name || !duration || !price) {
+    if (!name ) {
       return NextResponse.json({ msg: "Missing required fields" }, { status: 400 })
     }
 

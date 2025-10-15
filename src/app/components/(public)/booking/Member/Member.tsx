@@ -11,34 +11,26 @@ interface Props {
   bookingsetting:any;
 }
 interface TeamMember {
-  firstName: string;
-  lastName: string;
-  role: string;
-  price: number;
-  avatar?: string;
+bio:string;
+firstName:string;
+id:string;
+imageurl:string;
+isAvailable:boolean;
+lastName:string;
+rating:number;
+role:string;
 }
 function Member({ select, viewNum, viewselected, data ,bookingsetting}: Props) {
   // need a loading state
   const [members,setMembers]=useState<TeamMember[]>([])
-  const getteam=async()=>{
-    // need to get all providers by id
-    const response = await fetch('/api/team')
-    const data = await response.json()
-    setMembers(data)
-  }
+
   useEffect(()=>{
-    const providerData = Array.isArray(bookingsetting[data.serviceNum]?.provider)
-  ? bookingsetting[data.serviceNum].provider
-  : [bookingsetting[data.serviceNum]?.provider].filter(Boolean);
-    const fetchTeamMembers = async () => {
-      try {
-        getteam()
-      } catch (error) {
-        console.error('Error fetching team members:', error)
-      }
-    }
-   console.log(providerData)
-    // fetchTeamMembers() 
+  //   const providerData = Array.isArray(bookingsetting[data.serviceNum]?.provider)
+  // ? bookingsetting[data.serviceNum].provider
+  // : [bookingsetting[data.serviceNum]?.provider].filter(Boolean);
+  const providerData =bookingsetting[data.serviceNum].providers
+  setMembers(providerData)
+   
   },[])
 
   return (
@@ -66,8 +58,9 @@ function Member({ select, viewNum, viewselected, data ,bookingsetting}: Props) {
                 className="mx-auto mb-2"
               />
               <h3 className="text-lg font-semibold text-center">{member.firstName} {member.lastName}</h3>
+              <h3 className="text-gray-700 text-center">{member.bio}</h3>
               <p className="text-gray-500">{member.role}</p>
-              {member.price&&<p className="text-gray-700 text-center">R{member.price}</p>}
+             
             </div>
           );
         })}
