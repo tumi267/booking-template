@@ -1,4 +1,5 @@
 'use client'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 interface Booking {
@@ -34,6 +35,7 @@ interface Booking {
 }
 
 function ViewBooking() {
+  const router=useRouter()
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -110,7 +112,7 @@ function ViewBooking() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {bookings.map((booking) => (
-            <div key={booking.id} className="bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <div key={booking.id} className="bg-white border shadow-sm hover:shadow-md transition-shadow">
               <div className="p-6">
                 {/* Header */}
                 <div className="flex justify-between items-start mb-4">
@@ -118,9 +120,9 @@ function ViewBooking() {
                     <h3 className="text-lg font-semibold text-gray-900">
                       {booking.services.name}
                     </h3>
-                    <p className="text-sm text-gray-500">#{booking.id.slice(0, 8)}</p>
+                    
                   </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
+                  <span className={`px-2 py-1 text-xs font-medium ${getStatusColor(booking.status)}`}>
                     {booking.status}
                   </span>
                 </div>
@@ -148,7 +150,7 @@ function ViewBooking() {
                 <div className="mb-4">
                   <p className="text-sm font-medium text-gray-700">Date & Time</p>
                   <p className="text-sm text-gray-900">{formatDate(booking.date)}</p>
-                  <p className="text-sm text-gray-900">at {booking.time}</p>
+                  <p className="text-sm text-gray-900">{booking.time}</p>
                 </div>
 
                 {/* Session Details */}
@@ -172,7 +174,7 @@ function ViewBooking() {
                     Created: {new Date(booking.createdAt).toLocaleDateString()}
                   </p>
                   <button 
-                    onClick={() => console.log('Edit booking:', booking.id)}
+                    onClick={()=>{router.push(`/admin/booking/${booking.id}`)}}
                     className="text-sm text-blue-600 hover:text-blue-800"
                   >
                     View Details

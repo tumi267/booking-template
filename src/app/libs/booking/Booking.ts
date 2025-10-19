@@ -50,6 +50,17 @@ export const getBookingsByClient = async (clientId: string) => {
     orderBy: { date: 'desc' },
   });
 };
+// READ - Get single booking by ID
+export const getBookingById = async (id: string) => {
+  return await prisma.booking.findUnique({
+    where: { id },
+    include: {
+      client: true,
+      provider: true,
+      services: true,
+    },
+  });
+};
 
 // READ - Get bookings by provider
 export const getBookingsByProvider = async (providerId: string) => {
