@@ -8,6 +8,7 @@ interface HeroProps {
   }
 
 function Hero({src,name,text}: HeroProps) {
+
   return (
     <div className="relative w-full h-[600px]">
         <Image src={src} alt={name} fill />
