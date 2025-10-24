@@ -17,11 +17,19 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const clientId = searchParams.get("clientId");
     const providerId = searchParams.get("providerId");
-
-    let bookings;
+    
+    let bookings: any[] = [];
 
     if (clientId) {
-      bookings = await getBookingsByClient(clientId);
+      const user = await getUserByClerkId(clientId);
+      
+      if (!user) {
+        // Return empty array if user not found
+        bookings = [];
+      } else {
+        bookings = await getBookingsByClient(user.id);
+        console.log(user.id)
+      }
     } else if (providerId) {
       bookings = await getBookingsByProvider(providerId);
     } else {
