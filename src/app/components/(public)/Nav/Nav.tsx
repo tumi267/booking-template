@@ -8,7 +8,6 @@ function Nav() {
     const order = ['Home', 'About', 'Clients', 'Booking', 'Contact Us','Log in / Sign Up']
     const { isSignedIn, userId} = useAuth()
     const { user} = useUserStore()
-    console.log(userId)
     const sortedLinks = links.sort(
     (a, b) => order.indexOf(a.tag) - order.indexOf(b.tag)
     )

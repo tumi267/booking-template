@@ -1,4 +1,5 @@
 'use client'
+import { useAuth } from '@clerk/nextjs';
 
 interface Props {
   viewNum: (val: any) => void;
@@ -8,7 +9,15 @@ interface Props {
 }
 
 function Summery({ viewNum, viewselected, data ,bookingsetting}: Props) {
+  const { isSignedIn, userId } = useAuth();
+
   const handlesubmit = async () => {
+    // Check if user is signed in
+    if (!isSignedIn) {
+      alert('Please sign in to complete your booking.');
+      return;
+    }
+
     // Get providers for the selected service
     const providerData = Array.isArray(bookingsetting[data.serviceNum]?.providers)
       ? bookingsetting[data.serviceNum].providers
@@ -25,7 +34,7 @@ function Summery({ viewNum, viewselected, data ,bookingsetting}: Props) {
     }
   
     const bookinginfo = {
-      clientId: null, // optional, can be null
+      clientId: userId, // Use Clerk userId instead of null
       providerId: selectedProvider.id, // must be string
       serviceId: bookingsetting[data.serviceNum].serviceId, // connect by id
       price: bookingsetting[data.serviceNum].defaultPrice,

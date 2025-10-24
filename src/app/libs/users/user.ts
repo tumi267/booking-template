@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+
 // Create a new user
 export const createUser = async (data: {
   clerkId: string;
@@ -45,23 +46,28 @@ export const getUserById = async (id: string) => {
   });
 };
 
-// Update user
-export const updateUser = async (
-  id: string,
-  data: Partial<{
-    email: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
-    role: "CLIENT" | "TRAINER" | "ADMIN";
-    imageurl: string;
-  }>
-) => {
-  const formattedData: any = { ...data };
+// Get user by email
+export const getUserByEmail = async (email: string) => {
+  return prisma.user.findUnique({
+    where: { email },
+    include: { provider: true },
+  });
+};
 
-  if (data.role) {
-    formattedData.role = { set: data.role }; // convert to Prisma-compatible input
-  }
+// Update user by internal ID
+export const updateUser = async (id: string, data: {
+  clerkId?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  role?: "CLIENT" | "TRAINER" | "ADMIN";
+  imageurl?: string;
+}) => {
+  const formattedData = {
+    ...data,
+    ...(data.role && { role: data.role as any }),
+  };
 
   return prisma.user.update({
     where: { id },
@@ -69,9 +75,22 @@ export const updateUser = async (
   });
 };
 
-// Delete user
-export const deleteUser = async (id: string) => {
-  return prisma.user.delete({
-    where: { id },
+// Update user by Clerk ID
+export const updateUserByClerkId = async (clerkId: string, data: {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  role?: "CLIENT" | "TRAINER" | "ADMIN";
+  imageurl?: string;
+}) => {
+  const formattedData = {
+    ...data,
+    ...(data.role && { role: data.role as any }),
+  };
+
+  return prisma.user.update({
+    where: { clerkId },
+    data: formattedData,
   });
 };

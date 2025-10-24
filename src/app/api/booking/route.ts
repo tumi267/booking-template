@@ -1,3 +1,5 @@
+// app/api/booking/route.ts
+// app/api/booking/route.ts
 import { NextResponse } from 'next/server';
 import { 
   createBooking, 
@@ -7,6 +9,7 @@ import {
   updateBooking, 
   deleteBooking 
 } from '@/app/libs/booking/Booking';
+import { getUserByClerkId } from '@/app/libs/users/user';
 
 /* ---------------------- GET (READ BOOKINGS) ---------------------- */
 export async function GET(req: Request) {
@@ -40,13 +43,29 @@ export async function POST(req: Request) {
   try {
     const data = await req.json();
 
+    let clientId = data.clientId;
+
+    // If clientId is provided (Clerk userId), find the user in our database
+    if (clientId) {
+      const user = await getUserByClerkId(clientId);
+      
+      // If user doesn't exist in our database, set clientId to undefined
+      if (!user) {
+        console.warn(`User with clerkId ${clientId} not found in database`);
+        clientId = undefined;
+      } else {
+        // Use the internal database ID, not the Clerk ID
+        clientId = user.id;
+      }
+    }
+
     const newBooking = await createBooking({
-      clientId: data.clientId ?? null,
+      clientId: clientId, // Use the internal database user ID or undefined
       providerId: data.providerId,
       serviceId: data.serviceId,
       price: data.price,
       sessionDuration: data.sessionDuration,
-      date: new Date(data.date),
+      date: data.date, // Your createBooking already handles Date conversion
       time: data.time,
       specialRequests: data.specialRequests ?? "",
     });
@@ -83,8 +102,8 @@ export async function PATCH(req: Request) {
       status: updateData.status,
       price: updateData.price,
       sessionDuration: updateData.sessionDuration,
-      date: updateData.date ? new Date(updateData.date) : undefined,
-      time: updateData.time ? updateData.time : undefined,
+      date: updateData.date,
+      time: updateData.time,
       specialRequests: updateData.specialRequests,
     });
 

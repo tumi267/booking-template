@@ -20,6 +20,7 @@ function page() {
   })
   const [daysactive,setDaysActive]=useState([])
   const [bookingsetting,setBookingsetting]=useState([])
+  const [isLoading,setIsLoading]=useState(true)
   const getdateopening =async () => {
     const res = await fetch('/api/operating-hours')
     const data=await res.json()
@@ -29,11 +30,13 @@ function page() {
     const res = await fetch('/api/booking-settings')
     const data=await res.json()
     setBookingsetting(data)
-    console.log(data)
+   
+    setIsLoading(false)
   }
   useEffect(()=>{
     getdateopening()
     getbookingsettings()
+    
   },[])
   const [view,setview]=useState(0)
   const viewstate = () => {
@@ -90,6 +93,9 @@ function page() {
         viewselected={view}
         /> // fallback
     }
+  }
+  if(isLoading){
+    return <div>... Loading</div>
   }
   return (
     <div className="text-center">
