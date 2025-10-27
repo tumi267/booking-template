@@ -49,6 +49,7 @@ function ViewBooking() {
       }
       const data = await res.json()
       setBookings(data)
+     
     } catch (err) {
       setError('Error fetching bookings')
       console.error(err)

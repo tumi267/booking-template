@@ -10,6 +10,7 @@ interface BookingDetail {
     firstName: string
     lastName: string
     email: string
+    phone:string
   } | null
   provider: {
     id: string
@@ -43,6 +44,7 @@ function BookingDetails() {
       const res = await fetch(`/api/booking/${id}`)
       if (!res.ok) throw new Error('Failed to fetch booking')
       const data = await res.json()
+      console.log(data)
       setBooking(data)
     } catch (err) {
       setError('Error fetching booking details')
@@ -78,15 +80,10 @@ function BookingDetails() {
 
   return (
     <div className="p-8 max-w-2xl mx-auto bg-white rounded-lg shadow">
-      <button
-        onClick={() => router.back()}
-        className="text-blue-600 hover:underline mb-6"
-      >
-        ← Back to all bookings
-      </button>
-
       <h1 className="text-2xl font-bold mb-6">{booking.services.name}</h1>
-
+      <h2>client: {booking.client?.firstName} {booking.client?.lastName}</h2>
+      <h2>contact: {booking.client?.email} </h2>
+      <h2> {booking.client?.phone} </h2>
       <BookingForm booking={booking} onSave={handleUpdate} />
     </div>
   )

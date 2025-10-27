@@ -52,13 +52,14 @@ function Summery({ viewNum, viewselected, data ,bookingsetting}: Props) {
       });
   
       const res = await createbooking.json();
-      console.log(res);
+      
     } catch (error) {
       console.error('Error creating booking:', error);
     }
   };
   return (
     <div className="w-[90%] mx-auto">
+      
       <h2 className="text-xl font-semibold mb-4">Summary</h2>
 
       <table className="w-full border border-gray-300 rounded-lg overflow-hidden">

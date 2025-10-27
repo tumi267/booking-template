@@ -28,7 +28,7 @@ export async function GET(req: Request) {
         bookings = [];
       } else {
         bookings = await getBookingsByClient(user.id);
-        console.log(user.id)
+       
       }
     } else if (providerId) {
       bookings = await getBookingsByProvider(providerId);

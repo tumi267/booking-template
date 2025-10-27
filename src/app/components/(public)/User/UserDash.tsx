@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import Menu from './Menu'
 import Profile from './Profile'
-import CurrentBookings from './CurrentBookings'
+
 import BookingHistory from './BookingHistory'
 
 interface Props {
@@ -20,7 +20,7 @@ function UserDash({id}:Props) {
         {selected==0&&<Profile
         id={id}
         />}
-        {selected==1&&<CurrentBookings/>}
+     
         {selected==2&&<BookingHistory userId={id} />}
     </div>
   )

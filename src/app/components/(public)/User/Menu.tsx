@@ -37,16 +37,9 @@ function Menu({id,select}:Props) {
 
     <button
       className="text-left w-[100%] text-white p-2 hover:bg-gray-300"
-      onClick={() => setRenderState('Current Booking')}
-    >
-      Current Booking
-    </button>
-
-    <button
-      className="text-left w-[100%] text-white p-2 hover:bg-gray-300"
       onClick={() => setRenderState('Booking History')}
     >
-      Booking History
+      Bookings
     </button>
   </div>
   )
