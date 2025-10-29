@@ -57,6 +57,18 @@ export const getProviderById = async (id: string) => {
   });
 };
 
+export const getProviderByClerkId = async (clerkId: string) => {
+  return prisma.provider.findUnique({
+    where: { clerkId },
+    include: { 
+      user: true,
+    
+      bookings: true,
+ 
+      bookingSettings: true, }, // include linked user
+  });
+};
+
 // READ provider by active
 export const getProviderAvailable = async () => {
   return await prisma.provider.findMany({
