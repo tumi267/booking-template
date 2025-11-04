@@ -11,6 +11,7 @@ export const createProvider = async (providerData: {
   bio?: string;
   role?: string; // coming from frontend
   userId?: string;
+  clerkId: string
 }) => {
   // Convert role string to enum if valid
   let role: ProviderRole | undefined;
@@ -27,6 +28,7 @@ export const createProvider = async (providerData: {
       bio: providerData.bio,
       role,        // ✅ enum-safe
       userId: providerData.userId,
+      clerkId: providerData.clerkId
     },
     include: { user: true,  bookingSettings: true },
   });

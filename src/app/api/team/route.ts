@@ -1,6 +1,7 @@
 import { createProvider, deleteProvider, getAllProviders, updateProvider } from '@/app/libs/providers/providers'
 import { NextResponse } from 'next/server'
 import { ProviderRole } from '@prisma/client' // ✅ import enum
+import { clerkClient } from '@clerk/nextjs/server'
 
 // GET request
 export async function GET() {
@@ -22,7 +23,14 @@ export async function POST(req: Request) {
   if (newMember.role && Object.values(ProviderRole).includes(newMember.role)) {
     role = newMember.role as ProviderRole
   }
-
+  // Create Clerk user using Backend API
+  const client = await clerkClient()
+  const clerkUser = await client.users.createUser({
+    emailAddress: [newMember.email],
+    password: newMember.password,
+    firstName: newMember.firstName,
+    lastName: newMember.lastName,
+  })
   // Build provider object safely
   const providerData = {
     firstName: newMember.firstName,
@@ -32,6 +40,7 @@ export async function POST(req: Request) {
     bio: newMember.bio,
     role,         // ✅ enum-safe
     userId: newMember.userId, // optional
+    clerkId: clerkUser.id, 
   }
 
   const data = await createProvider(providerData)

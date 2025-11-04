@@ -25,7 +25,7 @@ model User {
 
 model Provider {
   id               String            @id @default(uuid())
-  clerkId          String?   @unique
+  clerkId          String?          @unique
   firstName        String
   lastName         String
   imageurl         String?

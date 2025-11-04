@@ -24,7 +24,7 @@ function AddMember({ openAddTeamMember }: AddMemberProps) {
     bio: '',
     role: ProviderRole.TRAINER,
   })
-
+  const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,6 +40,7 @@ function AddMember({ openAddTeamMember }: AddMemberProps) {
           firstName: newProvider.firstName,
           lastName: newProvider.lastName,
           email: newProvider.email,
+          password: password,
           imageurl: newProvider.imageurl,
           bio: newProvider.bio,
           role: newProvider.role,
@@ -109,6 +110,18 @@ function AddMember({ openAddTeamMember }: AddMemberProps) {
               value={newProvider.email}
               onChange={(e) =>
                 setNewProvider({ ...newProvider, email: e.target.value })
+              }
+              disabled={isLoading}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="block mb-1">Password</label>
+            <input
+              type="Password"
+              className="w-full border px-3 py-2 rounded"
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value )
               }
               disabled={isLoading}
             />

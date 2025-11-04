@@ -5,6 +5,7 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import AddMember from './AddMember'
 import UpdateMember from './editTeamMember'
+import { useAuth } from '@clerk/nextjs'
 
 interface Member {
   id: string
@@ -23,11 +24,19 @@ function TeamDash() {
   const [teamMembers, setTeamMembers] = useState<Member[]>([])
   const [openupdateMemberModal, setOpenUpdateMemberModal] = useState(false)
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
-
+  const {userId} = useAuth()
+  const [isAdmin,setisAdmin]=useState(false)
 // we need a loading state
 const getteam=async()=>{
   const response = await fetch('/api/team')
   const data = await response.json()
+  
+  const adminMember = data.find((member) => 
+      member.clerkId === userId && member?.role === 'ADMIN'
+    )
+    
+    setisAdmin(adminMember?.role== 'ADMIN')
+
   setTeamMembers(data)
 }
 useEffect(() => {
@@ -72,12 +81,12 @@ if (isloading) {
   return (
     <div>
       <h2>Edit Team</h2>
-      <button
+      {isAdmin&&<button
         className="bg-blue-500 text-white px-4 py-2 rounded"
         onClick={openAddTeamMember}
       >
         Add Member
-      </button>
+      </button>}
 
       <table className="min-w-full mt-4 border">
         <thead>
@@ -111,10 +120,10 @@ if (isloading) {
           </td>
           <td className="border px-4 py-2">{member.firstName} {member.lastName}</td>
           <td className="border px-4 py-2">{member.role}</td>
-          <td className="border px-4 py-2">
+          {isAdmin &&<td className="border px-4 py-2">
             <button className="bg-green-500 text-white px-2 py-1 rounded mr-2" onClick={() => handleEdit(member)}>Edit</button>
             <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={()=>{handleDelete(member)}}>Delete</button>
-          </td>
+          </td>}
         </tr>
         ))
         )}
@@ -126,7 +135,7 @@ if (isloading) {
           closeModal={() => setOpenUpdateMemberModal(false)}
         />
       }
-      {isAddTeamMemberOpen && <AddMember openAddTeamMember={openAddTeamMember} />}
+      {isAddTeamMemberOpen && isAdmin&&<AddMember openAddTeamMember={openAddTeamMember} />}
     </div>
   )
 }
